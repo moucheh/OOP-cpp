@@ -41,9 +41,9 @@ private:
 template<typename T>
 Queue<T>& Queue<T>::push(const T& el) {
 	auto newNode = new Node{el, nullptr};
-	if (empty()) {
+	if (empty())
 		_bottom = newNode;
-	} else {
+	else {
 		auto current = _bottom;
 		while (current->next != nullptr)
 			current = current->next;
@@ -74,9 +74,8 @@ Queue<T>::Queue(const Queue<T>& other) {
 
 template<typename T>
 Queue<T>& Queue<T>::operator=(const Queue<T>& other) {
-	while (!empty()) {
+	while (!empty())
 		pop();
-	}
 	_bottom = nullptr;
 	auto current = other._bottom;
 	while (current != nullptr) {
@@ -88,9 +87,8 @@ Queue<T>& Queue<T>::operator=(const Queue<T>& other) {
 
 template<typename T>
 Queue<T>& Queue<T>::operator=(Queue<T>&& other) {
-	while (!empty()) {
+	while (!empty())
 		pop();
-	}
 	_bottom = nullptr;
 	_size = other._size;
 	_bottom = other._bottom;
