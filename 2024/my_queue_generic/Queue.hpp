@@ -17,8 +17,8 @@ public:
 		other._size = 0;
 	}
 	Queue(const Queue<T>& other);
-	Queue<T> operator=(const Queue<T>& other);
-	Queue<T> operator=(Queue<T>&& other);
+	Queue<T>& operator=(const Queue<T>& other);
+	Queue<T>& operator=(Queue<T>&& other);
 	~Queue();
 
 	Queue(const std::initializer_list<T>& list);
@@ -65,7 +65,6 @@ void Queue<T>::pop() {
 
 template<typename T>
 Queue<T>::Queue(const Queue<T>& other) {
-	_size = other._size;
 	auto current = other._bottom;
 	while (current != nullptr) {
 		push(current->_value);
@@ -74,31 +73,30 @@ Queue<T>::Queue(const Queue<T>& other) {
 }
 
 template<typename T>
-Queue<T> Queue<T>::operator=(const Queue<T>& other) {
+Queue<T>& Queue<T>::operator=(const Queue<T>& other) {
 	while (!empty()) {
-		auto temp = _bottom->next;
-		delete _bottom;
-		_bottom = temp;
+		pop();
 	}
-	_size = other._size;
+	_bottom = nullptr;
 	auto current = other._bottom;
 	while (current != nullptr) {
 		push(current->_value);
 		current = current->next;
 	}
+	return *this;
 }
 
 template<typename T>
-Queue<T> Queue<T>::operator=(Queue<T>&& other) {
+Queue<T>& Queue<T>::operator=(Queue<T>&& other) {
 	while (!empty()) {
-		auto temp = _bottom->next;
-		delete _bottom;
-		_bottom = temp;
+		pop();
 	}
+	_bottom = nullptr;
 	_size = other._size;
 	_bottom = other._bottom;
 	other._size = 0;
 	other._bottom = nullptr;
+	return *this;
 }
 
 

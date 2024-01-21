@@ -21,8 +21,9 @@ int main() {
 	Queue<int> q3{1, 2, 3, 4};
 	Queue<int> q4{q3};
 	Queue<int> q5 = Queue<int> {99, 100, 101};
-	cout << q3 << endl;
-	cout << q4 << endl;
-	cout << q5 << endl;
+	q3 = Queue<int> {69, 70, 71};
+	cout << q3 << ' ' << q3.size() << endl;
+	cout << q4 << ' ' << q4.size() << endl;
+	cout << q5 << ' ' << q5.size() << endl;
 	return 0;
 }
