@@ -1,6 +1,5 @@
 # OOP-cpp
-Implementirana je genericka dvostruko vezana genericka lista.
-;NBSP Lista podrzava:
+Implementirana je genericka dvostruko vezana genericka lista.;NBSP Lista podrzava:
   * Default, copy i move konstrukciju;
   * Napisan je destuktor koji zove delete nad svakim cvorom,
   * Definisani su copy i move assignment operatori
