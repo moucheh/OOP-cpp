@@ -1,1 +1,1 @@
-# Auditorne vjezbe 4 kod asistenta Mirze Sakica
+# Auditorne vjezbe 7 kod asistenta Mirze Sakica
