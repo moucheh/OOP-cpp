@@ -22,5 +22,3 @@ int main (int argc, char* argv[]) {
 	std::cout << str;
 	return 0;
 }
-
-//139139
