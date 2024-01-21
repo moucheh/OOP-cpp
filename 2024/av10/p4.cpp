@@ -26,5 +26,3 @@ int main (int argc, char* argv[]) {
 	B b2(std::move(b1));
 	return 0;
 }
-
-//14260909
