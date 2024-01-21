@@ -1,5 +1,5 @@
-# OOP-cpp
-Implementirana je genericka dvostruko vezana genericka lista.
+# Genericka Lista
+Implementirana je genericka __dvostruko vezana genericka__ lista.
 
 Lista podrzava:
   * Default, copy i move konstrukciju;
