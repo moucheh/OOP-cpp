@@ -91,7 +91,7 @@ MojNizInt& MojNizInt::operator++() {
 }
 
 void MojNizInt::push_back(const int& element) {
-	if (velicina <= kapacitet) {
+	if (velicina < kapacitet) {
 		(*this)[velicina] = element;
 		++velicina;
 		return;
