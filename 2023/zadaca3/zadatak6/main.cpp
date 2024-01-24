@@ -26,7 +26,6 @@ namespace my {
 
 int main() {
 	std::vector<int> v{33, 45, 1, 3, 9, 199, 765};
-	};
 	my::sort(v.begin(), v.end());
 	for (const auto& i : v) {
 		std::cout << i << ' ';
