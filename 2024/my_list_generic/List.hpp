@@ -192,20 +192,32 @@ void List<T>::insert(const T& element, const int& position) {
 
 template<typename T>
 void List<T>::pop_back() {
+	--__size;
+	if (tail->prev == nullptr) {
+		delete tail;
+		tail = nullptr;
+		head = nullptr;
+		return;
+	}
 	auto temp = tail;
 	tail = tail->prev;
 	tail->next = nullptr;
 	delete temp;
-	--__size;
 }
 
 template<typename T>
 void List<T>::pop_front() {
+	--__size;
+	if (head->next == nullptr) {
+		delete head;
+		head = nullptr;
+		tail = nullptr;
+		return;
+	}
 	auto temp = head;
 	head = head->next;
 	head->prev = nullptr;
 	delete temp;
-	--__size;
 }
 
 template<typename T>
