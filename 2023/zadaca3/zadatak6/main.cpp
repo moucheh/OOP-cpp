@@ -25,20 +25,11 @@ namespace my {
 }
 
 int main() {
-	std::vector<std::string> v{
-		"hello",
-		"Muhamed",
-		"Taletovic",
-		"Osman",
-		"Aszpilicuetta",
-		"Kladanj",
-		"Sasa Matic - Oko moje"
+	std::vector<int> v{33, 45, 1, 3, 9, 199, 765};
 	};
-	my::sort(v.begin(), v.end(), [](std::string a, std::string b) {
-		return a.size() < b.size();
-	});
+	my::sort(v.begin(), v.end());
 	for (const auto& i : v) {
-		std::cout << i.size() << " : " << i << '\n';
+		std::cout << i << ' ';
 	}
 	std::cout << std::endl;
 	return 0;
