@@ -23,14 +23,14 @@ public:
 	Matrica<T> operator+(const Matrica<T> druga) const;
 	Matrica<T> operator-(const Matrica<T> druga) const;
 
-	Matrica<T> operator*(const T& skalar) const;
-	Matrica<T> operator/(const T& skalar) const;
+	Matrica<T> operator*(const double& skalar) const;
+	Matrica<T> operator/(const double& skalar) const;
 
 	Matrica<T>& operator+=(const Matrica<T>& druga);
 	Matrica<T>& operator-=(const Matrica<T>& druga);
 
-	Matrica<T>& operator*=(const T& skalar);
-	Matrica<T>& operator/=(const T& skalar);
+	Matrica<T>& operator*=(const double& skalar);
+	Matrica<T>& operator/=(const double& skalar);
 
 	T& operator()(const int& i, const int& j) {
 		return alokator[i * brojKolona + j];
@@ -122,11 +122,6 @@ Matrica<T>& Matrica<T>::operator+=(const Matrica<T>& druga) {
 		throw std::domain_error{"Dimenzije matrica nisu iste."};
 	for (auto i = 0; i < brojRedova * brojKolona; ++i)
 		alokator[i] += druga.alokator[i];
-	for (auto i = 0; i < brojRedova; ++i) {
-		for (auto j = 0; j < brojKolona; ++j) {
-			(*this)(i, j) += druga(i, j);
-		}
-	}
 	return *this;
 }
 
@@ -160,21 +155,21 @@ Matrica<T> Matrica<T>::operator-(const Matrica<T> druga) const {
 }
 
 template<typename T>
-Matrica<T>& Matrica<T>::operator*=(const T& skalar) {
+Matrica<T>& Matrica<T>::operator*=(const double& skalar) {
 	for (auto i = 0; i < brojRedova * brojKolona; ++i)
 		alokator[i] *= skalar;
 	return *this;
 }
 
 template<typename T>
-Matrica<T>& Matrica<T>::operator/=(const T& skalar) {
+Matrica<T>& Matrica<T>::operator/=(const double& skalar) {
 	for (auto i = 0; i < brojRedova * brojKolona; ++i)
-		alokator[i] *= skalar;
+		alokator[i] /= skalar;
 	return *this;
 }
 
 template<typename T>
-Matrica<T> Matrica<T>::operator*(const T& skalar) const {
+Matrica<T> Matrica<T>::operator*(const double& skalar) const {
 	auto temp = *this;
 	for (auto i = 0; i < brojRedova * brojKolona; ++i)
 		temp.alokator[i] *= skalar;
@@ -182,7 +177,7 @@ Matrica<T> Matrica<T>::operator*(const T& skalar) const {
 }
 
 template<typename T>
-Matrica<T> Matrica<T>::operator/(const T& skalar) const {
+Matrica<T> Matrica<T>::operator/(const double& skalar) const {
 	if (skalar == 0)
 		throw std::domain_error{"Dijeljenje s nulom nije definisano."};
 	auto temp = *this;
