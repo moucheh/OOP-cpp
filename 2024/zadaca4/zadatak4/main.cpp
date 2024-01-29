@@ -1,18 +1,6 @@
 #include "Matrica.hpp"
 #include <iostream>
 
-template<typename T>
-std::ostream& operator<<(std::ostream& izlaz, const Matrica<T>& matr) {
-	for (auto i = 0; i < matr.getBrojRedova(); ++i) {
-		for (auto j = 0; j < matr.getBrojKolona(); ++j) {
-			izlaz << matr(i, j) << '\t';
-		}
-		izlaz << '\n';
-	}
-	return izlaz;
-}
-
-
 int main() {
 	Matrica<int> a(2, 2);
 	a(0, 0) = 1;

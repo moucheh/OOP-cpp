@@ -2,6 +2,7 @@
 #include <initializer_list>
 #include <algorithm>
 #include <stdexcept>
+#include <iostream>
 
 template<typename T>
 class Matrica {
@@ -32,11 +33,11 @@ public:
 	Matrica<T>& operator/=(const T& skalar);
 
 	T& operator()(const int& i, const int& j) {
-		return alokator[i * brojRedova + j];
+		return alokator[i * brojKolona + j];
 	}
 
 	const T& operator()(const int& i, const int& j) const {
-		return alokator[i * brojRedova + j];
+		return alokator[i * brojKolona + j];
 	}
 
 	int getBrojRedova() const { return brojRedova; }
@@ -121,6 +122,11 @@ Matrica<T>& Matrica<T>::operator+=(const Matrica<T>& druga) {
 		throw std::domain_error{"Dimenzije matrica nisu iste."};
 	for (auto i = 0; i < brojRedova * brojKolona; ++i)
 		alokator[i] += druga.alokator[i];
+	for (auto i = 0; i < brojRedova; ++i) {
+		for (auto j = 0; j < brojKolona; ++j) {
+			(*this)(i, j) += druga(i, j);
+		}
+	}
 	return *this;
 }
 
@@ -183,4 +189,15 @@ Matrica<T> Matrica<T>::operator/(const T& skalar) const {
 	for (auto i = 0; i < brojRedova * brojKolona; ++i)
 		temp.alokator[i] /= skalar;
 	return temp;
+}
+
+template<typename T>
+std::ostream& operator<<(std::ostream& izlaz, const Matrica<T>& matr) {
+	for (auto i = 0; i < matr.getBrojRedova(); ++i) {
+		for (auto j = 0; j < matr.getBrojKolona(); ++j) {
+			izlaz << matr(i, j) << '\t';
+		}
+		izlaz << '\n';
+	}
+	return izlaz;
 }
