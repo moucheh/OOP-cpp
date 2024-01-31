@@ -20,6 +20,11 @@ public:
 	MojNiz<T> operator=(MojNiz<T>&& drugi);
 	~MojNiz<T>() { delete[] alokator; }
 
+	template<typename U>
+	MojNiz<T>(const MojNiz<U>& drugi);
+	template<typename U>
+	MojNiz<T> operator=(const MojNiz<U>& drugi);
+
 	MojNiz<T>(const std::initializer_list<T>& _list);
 
 	void push_back(const T& element);
@@ -52,6 +57,9 @@ public:
 
 	MojNiz<T> operator+(const MojNiz<T>& drugi) const;
 
+	template<typename U>
+	auto operator+(const MojNiz<T>& drugi) const;
+
 	MojNiz<T> operator*(const double& multiplikator) const;
 
 	MojNiz<T>& operator++();
@@ -81,6 +89,19 @@ MojNiz<T>::MojNiz(const MojNiz<T>& drugi) :
 }
 
 template<typename T>
+template<typename U>
+MojNiz<T>::MojNiz(const MojNiz<U>& drugi) :
+	velicina{drugi.size()},
+	kapacitet{drugi.capacity()},
+	alokator{new T[kapacitet]} {
+	std::copy(
+		drugi.data(),
+		drugi.data() + drugi.size(),
+		alokator
+	);
+}
+
+template<typename T>
 MojNiz<T>::MojNiz(MojNiz<T>&& drugi) :
 	velicina{drugi.velicina},
 	kapacitet{drugi.kapacitet},
@@ -91,6 +112,23 @@ MojNiz<T>::MojNiz(MojNiz<T>&& drugi) :
 template<typename T>
 MojNiz<T> MojNiz<T>::operator=(const MojNiz<T>& drugi) {
 	if (this != &drugi) {
+		delete[] alokator;
+		velicina = drugi.size();
+		kapacitet = drugi.capacity();
+		alokator = new T[kapacitet];
+		std::copy(
+			drugi.data(),
+			drugi.data() + drugi.size(),
+			alokator
+		);
+	}
+	return *this;
+}
+
+template<typename T>
+template<typename U>
+MojNiz<T> MojNiz<T>::operator=(const MojNiz<U>& drugi) {
+	if ((void*)this != (void*)&drugi) {
 		delete[] alokator;
 		velicina = drugi.size();
 		kapacitet = drugi.capacity();
@@ -201,6 +239,17 @@ MojNiz<T> MojNiz<T>::operator+(const MojNiz<T>& drugi) const {
 	if (size() != drugi.size())
 		throw std::domain_error{"Nisu iste duzine nizova"};
 	auto temp = *this;
+	for (auto i = 0; i < size(); ++i)
+		temp[i] += drugi[i];
+	return temp;
+}
+
+template<typename T>
+template<typename U>
+auto MojNiz<T>::operator+(const MojNiz<T>& drugi) const {
+	if (size() != drugi.size())
+		throw std::domain_error{"Nisu iste duzine nizova"};
+	MojNiz < decltype(*(this)[0] + drugi[0]) > temp = *this;
 	for (auto i = 0; i < size(); ++i)
 		temp[i] += drugi[i];
 	return temp;

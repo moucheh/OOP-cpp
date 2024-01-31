@@ -6,9 +6,11 @@ int main() {
 	MojNiz<double> c;
 	MojNiz<int> a{1, 2, 1, 3, 4};
 	MojNiz<int> b{4, 5, 6, 8, 9};
-	MojNiz<int> d{a};
+	MojNiz<int> d{c};
 	b = a;
-	a = MojNiz<int> {1, 2, 4, 5};
+	a = MojNiz<char> {65, 66, 67, 68, 69};
+	c = a + b;
+	cout << c << endl;
 	cout << b << endl;
 	b.push_back(25);
 	cout << b << endl;
