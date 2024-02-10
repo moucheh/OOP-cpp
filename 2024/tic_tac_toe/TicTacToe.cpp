@@ -43,9 +43,6 @@ void TicTacToe::input_number(u_int_16& input) const {
 	while (!(cin >> input)) {
 		fix_cin();
 		cout << "Invalid input!\nEnter new value(0-2): ";
-		cin >> input;
-		if (cin)
-			break;
 	}
 }
 
