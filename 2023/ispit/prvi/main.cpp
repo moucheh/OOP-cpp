@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 std::vector<int> fib(int n) {
-	if (std::cin)
+	if (!std::cin)
 		throw std::runtime_error{"Morate unijeti validan broj."};
 	if (n <= 0)
 		throw std::runtime_error{"Mora biti > 0."};
