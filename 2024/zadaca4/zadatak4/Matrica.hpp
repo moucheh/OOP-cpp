@@ -170,6 +170,8 @@ Matrica<T>& Matrica<T>::operator/=(const double& skalar) {
 
 template<typename T>
 Matrica<T> Matrica<T>::operator*(const double& skalar) const {
+	if (skalar == 0.)
+		throw std::domain_error{"Dijeljenje s nulom nije definisano."};
 	auto temp = *this;
 	for (auto i = 0; i < brojRedova * brojKolona; ++i)
 		temp.alokator[i] *= skalar;
@@ -178,7 +180,7 @@ Matrica<T> Matrica<T>::operator*(const double& skalar) const {
 
 template<typename T>
 Matrica<T> Matrica<T>::operator/(const double& skalar) const {
-	if (skalar == 0)
+	if (skalar == 0.)
 		throw std::domain_error{"Dijeljenje s nulom nije definisano."};
 	auto temp = *this;
 	for (auto i = 0; i < brojRedova * brojKolona; ++i)
