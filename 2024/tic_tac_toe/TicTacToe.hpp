@@ -19,9 +19,9 @@ public:
 private:
 	void change_player();
 
-	void request_player_input(u_int_16& row, u_int_16& col) const;
+	static void request_player_input(u_int_16& row, u_int_16& col);
 
-	void input_number(u_int_16& input) const;
+	static void input_number(u_int_16& input);
 
 	bool update_board(u_int_16 row, u_int_16 col);
 

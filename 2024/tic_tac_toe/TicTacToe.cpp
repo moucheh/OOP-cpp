@@ -33,13 +33,13 @@ void TicTacToe::play() {
 	++counter;
 }
 
-void TicTacToe::request_player_input(u_int_16& row, u_int_16& col) const {
+void TicTacToe::request_player_input(u_int_16& row, u_int_16& col) {
 	cout << "Enter row and column(0-2): ";
 	input_number(row);
 	input_number(col);
 }
 
-void TicTacToe::input_number(u_int_16& input) const {
+void TicTacToe::input_number(u_int_16& input) {
 	while (!(cin >> input)) {
 		fix_cin();
 		cout << "Invalid input!\nEnter new value(0-2): ";
