@@ -6,30 +6,31 @@
 #include <random>
 #include <cstdlib>
 #include <ctime>
+#include <functional>
 
 using u_int_16 = unsigned short;
 using matrix = std::array<std::array<char, 3>, 3>;
 
 void fix_cin();
 
-class TicTacToe {
+class Board {
 public:
 	struct Player {
-		Player(char c, TicTacToe* p) : symbol{c}, ptr{p} {}
+		Player(char c, Board* p) : symbol{c}, ptr{p} {}
 		char symbol;
-		TicTacToe* ptr{nullptr};
+		Board* ptr{nullptr};
 		virtual void play() = 0;
 		bool update_board(u_int_16 row, u_int_16 col);
 		virtual ~Player() {}
 	};
 
 	struct HumanPlayer : Player {
-		HumanPlayer(char c, TicTacToe* p) : Player{c, p} {}
+		HumanPlayer(char c, Board* p) : Player{c, p} {}
 		void play();
 	};
 
 	struct MachinePlayer : Player {
-		MachinePlayer(char c, TicTacToe* p) : Player{c, p} {}
+		MachinePlayer(char c, Board* p) : Player{c, p} {}
 		void play();
 	};
 
@@ -41,6 +42,7 @@ public:
 	Player& get_player_one() { return player_one; }
 	Player& get_player_two() { return player_two; }
 	Player& get_cpu() { return cpu; }
+	Player* get_current_player() { return current_player; }
 
 	u_int_16 get_counter() const { return _counter; }
 
@@ -52,9 +54,15 @@ public:
 
 	static void input_number(u_int_16& input);
 
+	static u_int_16 menu();
+
 	bool update_board(u_int_16 row, u_int_16 col);
 
 	void check_win_state(char player);
+
+	void set_game_mode(int g);
+
+	std::function<void()>& swap_player() { return game_mode; }
 private:
 	matrix board{'.', '.', '.', '.', '.', '.', '.', '.', '.'};
 	HumanPlayer player_one{'X', this};
@@ -62,5 +70,7 @@ private:
 	MachinePlayer cpu{'O', this};
 	bool win_state{false};
 	u_int_16 _counter{};
+	std::function<void()> game_mode;
+	Player* current_player{&get_player_one()};
 };
 

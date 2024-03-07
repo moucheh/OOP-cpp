@@ -1,44 +1,21 @@
 #include "TicTacToe.hpp"
-#include <functional>
 using std::cout, std::endl;
 
-u_int_16 menu() {
-	u_int_16 choice;
-	cout << "Enter game mode: \n"
-		 << "1. Player vs Player\n"
-		 << "2. Player vs CPU\n"
-		 << "Choice: ";
-	TicTacToe::input_number(choice);
-	return choice;
-}
-
 int main() {
-	TicTacToe game;
-	TicTacToe::Player* current_player = &game.get_player_one();
-	u_int_16 choice = menu();
-	std::function<void()> swap_player;
-	if (choice == 1)
-		swap_player = [&]() {
-		if (current_player == &game.get_player_one())
-			current_player = &game.get_player_two();
-		else
-			current_player = &game.get_player_one();
-	};
-	if (choice == 2) {
-		swap_player = [&]() {
-			if (current_player == &game.get_player_one())
-				current_player = &game.get_cpu();
-			else
-				current_player = &game.get_player_one();
-		};
+	Board game;
+	u_int_16 choice = game.menu();
+	while (choice != 1 && choice != 2 && choice != 3) {
+		cout << "Invalid input, your options are 1, 2 and 3!\n";
+		choice = game.menu();
 	}
+	game.set_game_mode(choice);
 	for (auto i = 0; i < 9; i++) {
-		game.draw_board(current_player->symbol);
-		current_player->play();
+		game.draw_board(game.get_current_player()->symbol);
+		game.get_current_player()->play();
 		if (game.get_win_state()) {
-			game.draw_board(current_player->symbol);
+			game.draw_board(game.get_current_player()->symbol);
 			cout << "Game finished, "
-				 << game.get_player_one().symbol
+				 << game.get_current_player()->symbol
 				 << " won!" << endl;
 			break;
 		}
@@ -46,7 +23,7 @@ int main() {
 			game.draw_board(' ');
 			cout << "Game finished in a draw!" << endl;
 		}
-		swap_player();
+		game.swap_player()();
 	}
 	return 0;
 }
