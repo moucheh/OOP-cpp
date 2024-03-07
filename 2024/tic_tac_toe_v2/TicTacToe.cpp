@@ -7,6 +7,7 @@ void fix_cin() {
 }
 
 void TicTacToe::draw_board(char p) const {
+	cout << '\n';
 	if (!get_win_state() && _counter != 9)
 		cout << p << "'s turn\n";
 	cout << "  " << std::string(15, '-') << '\n';
@@ -38,6 +39,7 @@ void TicTacToe::MachinePlayer::play() {
 		row = rand() % 3;
 		col = rand() % 3;
 	} while (!update_board(row, col));
+	ptr->check_win_state(symbol);
 	++ptr->counter();
 }
 

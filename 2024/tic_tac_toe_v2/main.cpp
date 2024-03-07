@@ -14,29 +14,29 @@ u_int_16 menu() {
 
 int main() {
 	TicTacToe game;
-	TicTacToe::Player* p = &game.get_player_one();
+	TicTacToe::Player* current_player = &game.get_player_one();
 	u_int_16 choice = menu();
-	std::function<void()> lambda;
+	std::function<void()> swap_player;
 	if (choice == 1)
-		lambda = [&]() {
-		if (p == &game.get_player_one())
-			p = &game.get_player_two();
+		swap_player = [&]() {
+		if (current_player == &game.get_player_one())
+			current_player = &game.get_player_two();
 		else
-			p = &game.get_player_one();
+			current_player = &game.get_player_one();
 	};
 	if (choice == 2) {
-		lambda = [&]() {
-			if (p == &game.get_player_one())
-				p = &game.get_cpu();
+		swap_player = [&]() {
+			if (current_player == &game.get_player_one())
+				current_player = &game.get_cpu();
 			else
-				p = &game.get_player_one();
+				current_player = &game.get_player_one();
 		};
 	}
 	for (auto i = 0; i < 9; i++) {
-		game.draw_board(p->symbol);
-		p->play();
+		game.draw_board(current_player->symbol);
+		current_player->play();
 		if (game.get_win_state()) {
-			game.draw_board(game.get_player_one().symbol);
+			game.draw_board(current_player->symbol);
 			cout << "Game finished, "
 				 << game.get_player_one().symbol
 				 << " won!" << endl;
@@ -46,7 +46,7 @@ int main() {
 			game.draw_board(' ');
 			cout << "Game finished in a draw!" << endl;
 		}
-		lambda();
+		swap_player();
 	}
 	return 0;
 }
