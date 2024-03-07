@@ -32,11 +32,16 @@ public:
 
 	//operators
 
-	cplx operator+(const cplx&);
-	cplx operator-(const cplx&);
-	cplx operator*(const cplx&);
-	cplx operator/(const cplx&);
-	cplx operator!();
+	cplx operator+(const cplx&) const;
+	cplx operator-(const cplx&) const;
+	cplx operator*(const cplx&) const;
+	cplx operator/(const cplx&) const;
+	cplx operator!() const;
+
+	cplx& operator+=(const cplx& op);
+	cplx& operator-=(const cplx& op);
+	cplx& operator*=(const cplx& op);
+	cplx& operator/=(const cplx& op);
 
 	//helper methods
 
@@ -50,3 +55,5 @@ public:
 
 void print_cplx(const cplx&);
 void print_exp(const cplx&);
+
+std::ostream& operator<<(std::ostream& out, const cplx& c);

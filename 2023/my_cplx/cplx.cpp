@@ -51,25 +51,40 @@ double cplx::phase() const {
 
 // Operators
 
-cplx cplx::operator+(const cplx& op) {
+cplx cplx::operator+(const cplx& op) const {
 	return cplx{
 		_re + op._re,
 		_im + op._im
 	};
 }
-cplx cplx::operator-(const cplx& op) {
+cplx& cplx::operator+=(const cplx& op) {
+	_re += op._re;
+	_im += op._im;
+	return *this;
+}
+cplx cplx::operator-(const cplx& op) const {
 	return cplx{
 		_re - op._re,
 		_im - op._im
 	};
 }
-cplx cplx::operator*(const cplx& op) {
+cplx& cplx::operator-=(const cplx& op) {
+	_re -= op._re;
+	_im -= op._im;
+	return *this;
+}
+cplx cplx::operator*(const cplx& op) const {
 	return cplx{
 		_re* op._re - _im * op._im,
 		_re* op._im + _im* op._re
 	};
 }
-cplx cplx::operator/(const cplx& op) {
+cplx& cplx::operator*=(const cplx& op) {
+	_re = _re * op._re - _im * op._im;
+	_im = _re * op._im + _im * op._re;
+	return *this;
+}
+cplx cplx::operator/(const cplx& op) const {
 	return cplx{
 		(_re * op._re + _im * op._im) /
 		(op._re * op._re + op._im * op._im),
@@ -77,7 +92,14 @@ cplx cplx::operator/(const cplx& op) {
 		(op._re * op._re + op._im * op._im)
 	};
 }
-cplx cplx::operator!() {
+cplx& cplx::operator/=(const cplx& op) {
+	_re = _re * op._re + _im * op._im /
+		  op._re * op._re + op._im * op._im;
+	_im = _im * op._re - _re * op._im /
+		  op._re * op._re + op._im * op._im;
+	return *this;
+}
+cplx cplx::operator!() const {
 	return cplx{_re, -_im};
 }
 
@@ -113,4 +135,9 @@ void print_exp(const cplx& Z) {
 	if (Z.phase() != zero)
 		std::cout << "e^(i" << Z.phase() << "deg)";
 	std::cout << '}';
+}
+
+std::ostream& operator<<(std::ostream& out, const cplx& c) {
+	print_cplx(c);
+	return out;
 }
