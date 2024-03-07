@@ -10,7 +10,8 @@ int main() {
 	}
 	game.set_game_mode(choice);
 	for (auto i = 0; i < 9; i++) {
-		game.draw_board(game.get_current_player()->symbol);
+		if (game.get_current_player() != &game.get_cpu())
+			game.draw_board(game.get_current_player()->symbol);
 		game.get_current_player()->play();
 		if (game.get_win_state()) {
 			game.draw_board(game.get_current_player()->symbol);
