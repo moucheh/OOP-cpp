@@ -26,7 +26,7 @@ void sudoku::readPuzzle(std::istream &is) {
     }
 }
 
-void sudoku::print(std::ostream &os) {
+void sudoku::print(std::ostream &os) const {
   os << std::endl
      << "Cells filled: " << num_of_nzero_cells
      << "/81, conflicts: " << num_of_conflicts << std::endl;
@@ -207,7 +207,7 @@ void sudoku::validate(int row, int col) {
     remove_conflicts(row, col);
 }
 
-bool sudoku::won() { return !num_of_conflicts && num_of_nzero_cells == 81; }
+bool sudoku::won() const { return !num_of_conflicts && num_of_nzero_cells == 81; }
 
 void sudoku::remove_conflicts(int row, int col) {
   if (row < 0 || row > 9)
@@ -237,7 +237,7 @@ void sudoku::remove_conflicts(int row, int col) {
     }
 }
 
-std::pair<int, int> sudoku::get_submatrix_start_indexes(int row, int col) {
+std::pair<int, int> sudoku::get_submatrix_start_indexes(int row, int col) const {
   int srow;
   int scol;
 
@@ -260,4 +260,9 @@ std::pair<int, int> sudoku::get_submatrix_start_indexes(int row, int col) {
     scol = 6;
 
   return {srow, scol};
+}
+
+std::ostream& operator<<(std::ostream& os, const sudoku& s) {
+  s.print(os);
+  return os;
 }

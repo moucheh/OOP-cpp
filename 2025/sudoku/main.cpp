@@ -13,10 +13,10 @@ int main(int argc, char *argv[]) {
     s.play();
     if (s.won())
       break;
-    s.print(std::cout);
+    std::cout << s;
   }
 
-  s.print(std::cout);
+  std::cout << s;
   std::cout << "Congrats, you completed the game!" << std::endl;
   return 0;
 }

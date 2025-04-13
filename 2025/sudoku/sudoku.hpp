@@ -15,17 +15,17 @@ class sudoku {
 public:
   sudoku();
   void readPuzzle(std::istream &);
-  void print(std::ostream &);
+  void print(std::ostream &) const;
   void play();
   void validate(int row, int col);
-  bool won();
+  bool won() const;
 
 private:
   bool check_row(int row);
   bool check_col(int col);
   bool check_submatrix(int start_row, int start_col);
   void remove_conflicts(int row, int col);
-  std::pair<int, int> get_submatrix_start_indexes(int row, int col);
+  std::pair<int, int> get_submatrix_start_indexes(int row, int col) const;
 
 private:
   std::vector<std::vector<cell>> _game;
@@ -33,3 +33,5 @@ private:
   int num_of_conflicts;
   std::string separator;
 };
+
+std::ostream& operator<<(std::ostream& os, const sudoku& s);
