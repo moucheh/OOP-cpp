@@ -1,10 +1,10 @@
 #include "sudoku.hpp"
+#include <map>
 #include <sstream>
 #include <string>
-#include <map>
 
 sudoku::sudoku() : _game(9), num_of_nzero_cells(0), num_of_conflicts(0) {
-  for (auto& row : _game)
+  for (auto &row : _game)
     row.resize(9, {0, false, false, false});
 
   const std::string plus(1, '+');
@@ -16,8 +16,8 @@ sudoku::sudoku() : _game(9), num_of_nzero_cells(0), num_of_conflicts(0) {
 }
 
 void sudoku::readPuzzle(std::istream &is) {
-  for (auto& row : _game)
-    for (auto& col : row) {
+  for (auto &row : _game)
+    for (auto &col : row) {
       is >> col.value;
       if (col.value) {
         col.readonly = true;
@@ -27,9 +27,11 @@ void sudoku::readPuzzle(std::istream &is) {
 }
 
 void sudoku::print(std::ostream &os) {
-  os << "Cells filled: " << num_of_nzero_cells << "/81, conflicts: " << num_of_conflicts << std::endl;
+  os << std::endl
+     << "Cells filled: " << num_of_nzero_cells
+     << "/81, conflicts: " << num_of_conflicts << std::endl;
 
-  const auto check_if_multiple_of_3_or_last = [] (int val) {
+  const auto check_if_multiple_of_3_or_last = [](int val) {
     return (val + 1) % 3 == 0 && val != 8;
   };
 
@@ -67,7 +69,7 @@ void sudoku::play() {
     return !std::cin || val > 9 || val < 1;
   };
 
-  std::cout << "Enter your move(val: 1-9, row: 1-9, col: 1-9): ";
+  std::cout << "Enter your move in one line(val: 1-9, row: 1-9, col: 1-9): ";
 
   int value, row, col;
 
@@ -79,8 +81,9 @@ void sudoku::play() {
 
   is >> value;
 
-  if (check_range(value)) {
-    std::cout << "Invalid value, 1 through 9 only allowed!" << std::endl;
+  if (check_range(value) && value != 0) {
+    std::cout << "Invalid value, 1 through 9 only allowed, or 0 for erase!"
+              << std::endl;
     return play();
   }
 
@@ -104,10 +107,21 @@ void sudoku::play() {
     return play();
   }
 
+  if (value == 0) {
+    if (target_cell.value)
+      --num_of_nzero_cells;
+
+    target_cell.value = 0;
+    target_cell.user = false;
+    validate(row - 1, col - 1);
+    return;
+  }
+
+  if (!target_cell.value && target_cell.value != value)
+    ++num_of_nzero_cells;
+
   target_cell.value = value;
   target_cell.user = true;
-  ++num_of_nzero_cells;
-  
 
   validate(row - 1, col - 1);
 }
@@ -127,10 +141,9 @@ bool sudoku::check_row(int row) {
 
   if (conflict) {
     for (auto &cell : _game[row])
-      if (cell.value == conflict && cell.user && !cell.faulty) {
+      if (cell.value == conflict && !cell.faulty) {
         cell.faulty = true;
         ++num_of_conflicts;
-        break;
       }
   }
   return conflict;
@@ -151,10 +164,9 @@ bool sudoku::check_col(int col) {
 
   if (conflict) {
     for (auto &row : _game)
-      if (row[col].value == conflict && row[col].user && !row[col].faulty) {
+      if (row[col].value == conflict && !row[col].faulty) {
         row[col].faulty = true;
         ++num_of_conflicts;
-        break;
       }
   }
   return conflict;
@@ -164,77 +176,88 @@ bool sudoku::check_submatrix(int start_row, int start_col) {
   std::map<int, int> m;
 
   for (auto i = start_row; i < start_row + 3; ++i)
-    for(auto j = start_col; j < start_col + 3; ++j)
-    if (_game[i][j].value)
-      ++m[_game[i][j].value];
+    for (auto j = start_col; j < start_col + 3; ++j)
+      if (_game[i][j].value)
+        ++m[_game[i][j].value];
 
   int conflict = 0;
- 
+
   for (const auto &[key, value] : m)
     if (value > 1)
       conflict = key;
 
   if (conflict)
     for (auto i = start_row; i < start_row + 3; ++i)
-      for(auto j = start_col; j < start_col + 3; ++j)
-        if (_game[i][j].value == conflict && _game[i][j].user && !_game[i][j].faulty) {
+      for (auto j = start_col; j < start_col + 3; ++j)
+        if (_game[i][j].value == conflict && !_game[i][j].faulty) {
           ++num_of_conflicts;
           _game[i][j].faulty = true;
-          break;
         }
   return conflict;
 }
 
-void sudoku::validate() {
-  for (auto i = 0; i < 9; ++i)
-    check_row(i);
-
-  for (auto i = 0; i < 9; ++i)
-    check_col(i);
-
-  for (auto i = 0; i < 9; i += 3)
-    for (auto j = 0; j < 9; j += 3)
-      check_submatrix(i, j);
-}
-
 void sudoku::validate(int row, int col) {
-  int row_to_check;
-  int col_to_check;
+  auto [srow, scol] = get_submatrix_start_indexes(col, col);
 
-  if (row < 3)
-    row_to_check = 0;
+  bool res1 = check_row(row);
+  bool res2 = check_col(col);
+  bool res3 = check_submatrix(srow, scol);
 
-  else if (row >= 3 && row < 6)
-    row_to_check = 3;
-
-  else if (row >= 6 && row < 9)
-    row_to_check = 6;
-
-  if (col < 3)
-    col_to_check = 0;
-
-  else if (col >= 3 && col < 6)
-    col_to_check = 3;
-
-  else if (col >= 6 && col < 9)
-    col_to_check = 6;
-
-  if (!check_row(row) &&
-      !check_col(col) &&
-      !check_submatrix(row_to_check, col_to_check))
-    remove_conflict(row, col);
+  if (!res1 && !res2 && !res3)
+    remove_conflicts(row, col);
 }
 
-bool sudoku::won() {
-  return !num_of_conflicts && num_of_nzero_cells == 81;
-}
+bool sudoku::won() { return !num_of_conflicts && num_of_nzero_cells == 81; }
 
-void sudoku::remove_conflict(int row, int col) {
+void sudoku::remove_conflicts(int row, int col) {
   if (row < 0 || row > 9)
     return;
   if (col < 0 || col > 9)
     return;
 
-  _game[row][col].faulty = false;
-  --num_of_conflicts;
+  for (auto &cell : _game[row]) {
+    if (cell.faulty)
+      --num_of_conflicts;
+    cell.faulty = false;
+  }
+
+  for (auto &row : _game) {
+    if (row[col].faulty)
+      --num_of_conflicts;
+    row[col].faulty = false;
+  }
+
+  auto [srow, scol] = get_submatrix_start_indexes(row, col);
+
+  for (auto i = srow; i < srow + 3; ++i)
+    for (auto j = scol; j < scol + 3; ++j) {
+      if (_game[i][j].faulty)
+        --num_of_conflicts;
+      _game[i][j].faulty = false;
+    }
+}
+
+std::pair<int, int> sudoku::get_submatrix_start_indexes(int row, int col) {
+  int srow;
+  int scol;
+
+  if (row < 3)
+    srow = 0;
+
+  else if (row >= 3 && row < 6)
+    srow = 3;
+
+  else if (row >= 6 && row < 9)
+    srow = 6;
+
+  if (col < 3)
+    scol = 0;
+
+  else if (col >= 3 && col < 6)
+    scol = 3;
+
+  else if (col >= 6 && col < 9)
+    scol = 6;
+
+  return {srow, scol};
 }

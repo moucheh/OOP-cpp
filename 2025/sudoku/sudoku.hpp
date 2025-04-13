@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <utility>
 #include <vector>
 
 struct cell {
@@ -10,13 +11,12 @@ struct cell {
   bool readonly;
 };
 
-class sudoku{
+class sudoku {
 public:
   sudoku();
-  void readPuzzle(std::istream&);
-  void print(std::ostream&);
+  void readPuzzle(std::istream &);
+  void print(std::ostream &);
   void play();
-  void validate();
   void validate(int row, int col);
   bool won();
 
@@ -24,9 +24,10 @@ private:
   bool check_row(int row);
   bool check_col(int col);
   bool check_submatrix(int start_row, int start_col);
-  void remove_conflict(int row, int col);
+  void remove_conflicts(int row, int col);
+  std::pair<int, int> get_submatrix_start_indexes(int row, int col);
 
-private: 
+private:
   std::vector<std::vector<cell>> _game;
   int num_of_nzero_cells;
   int num_of_conflicts;

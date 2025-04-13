@@ -1,6 +1,6 @@
-#include <iostream>
-#include <fstream>
 #include "sudoku.hpp"
+#include <fstream>
+#include <iostream>
 
 int main(int argc, char *argv[]) {
   sudoku s;
@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
   s.readPuzzle(f);
   s.print(std::cout);
 
-  while(true) {
+  while (true) {
     s.play();
     if (s.won())
       break;
@@ -17,6 +17,6 @@ int main(int argc, char *argv[]) {
   }
 
   s.print(std::cout);
-  std::cout << "Congrats, you completed the game!";
+  std::cout << "Congrats, you completed the game!" << std::endl;
   return 0;
 }
