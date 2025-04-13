@@ -18,6 +18,7 @@ public:
   void play();
   void validate();
   void validate(int row, int col);
+  bool won();
 
 private:
   void check_row(int row);

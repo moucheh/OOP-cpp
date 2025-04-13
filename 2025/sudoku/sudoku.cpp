@@ -1,4 +1,4 @@
-#include "sudoku.h"
+#include "sudoku.hpp"
 #include <sstream>
 #include <string>
 #include <map>
@@ -108,7 +108,8 @@ void sudoku::play() {
   target_cell.user = true;
   ++num_of_nzero_cells;
   
-  validate(row, col);
+
+  validate(row - 1, col - 1);
 }
 
 void sudoku::check_row(int row) {
@@ -124,10 +125,14 @@ void sudoku::check_row(int row) {
     if (value > 1)
       conflict = key;
 
-  if (conflict)
+  if (conflict) {
     for (auto &cell : _game[row])
-      if (cell.value == conflict && cell.user)
+      if (cell.value == conflict && cell.user && !cell.faulty) {
         cell.faulty = true;
+        ++num_of_conflicts;
+        break;
+      }
+  }
 }
 
 void sudoku::check_col(int col) {
@@ -143,10 +148,14 @@ void sudoku::check_col(int col) {
     if (value > 1)
       conflict = key;
 
-  if (conflict)
+  if (conflict) {
     for (auto &row : _game)
-      if (row[col].value == conflict && row[col].user)
+      if (row[col].value == conflict && row[col].user && !row[col].faulty) {
         row[col].faulty = true;
+        ++num_of_conflicts;
+        break;
+      }
+  }
 }
 
 void sudoku::check_submatrix(int start_row, int start_col) {
@@ -154,10 +163,11 @@ void sudoku::check_submatrix(int start_row, int start_col) {
 
   for (auto i = start_row; i < start_row + 3; ++i)
     for(auto j = start_col; j < start_col + 3; ++j)
+    if (_game[i][j].value)
       ++m[_game[i][j].value];
 
   int conflict = 0;
-
+ 
   for (const auto &[key, value] : m)
     if (value > 1)
       conflict = key;
@@ -165,8 +175,11 @@ void sudoku::check_submatrix(int start_row, int start_col) {
   if (conflict)
     for (auto i = start_row; i < start_row + 3; ++i)
       for(auto j = start_col; j < start_col + 3; ++j)
-        if (_game[i][j].value == conflict && _game[i][j].user)
+        if (_game[i][j].value == conflict && _game[i][j].user && !_game[i][j].faulty) {
+          ++num_of_conflicts;
           _game[i][j].faulty = true;
+          break;
+        }
 }
 
 void sudoku::validate() {
@@ -182,29 +195,33 @@ void sudoku::validate() {
 }
 
 void sudoku::validate(int row, int col) {
-  check_row(row - 1);
-  check_col(col - 1);
+  check_row(row);
+  check_col(col);
 
   int row_to_check;
   int col_to_check;
 
-  if (row < 4)
+  if (row < 3)
     row_to_check = 0;
 
-  if (row > 4 && row < 7)
-    row_to_check = 1;
+  else if (row >= 3 && row < 6)
+    row_to_check = 3;
 
-  if (row > 7 && row < 10)
-    row_to_check = 1;
+  else if (row >= 6 && row < 9)
+    row_to_check = 6;
 
-  if (col < 4)
+  if (col < 3)
     col_to_check = 0;
 
-  if (col > 4 && col < 7)
-    col_to_check = 1;
+  else if (col >= 3 && col < 6)
+    col_to_check = 3;
 
-  if (col > 7 && col < 10)
-    col_to_check = 1;
+  else if (col >= 6 && col < 9)
+    col_to_check = 6;
 
   check_submatrix(row_to_check, col_to_check);
+}
+
+bool sudoku::won() {
+  return !num_of_conflicts && num_of_nzero_cells == 81;
 }

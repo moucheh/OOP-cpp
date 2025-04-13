@@ -1,7 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <vector>
-#include "sudoku.h"
+#include "sudoku.hpp"
 
 int main(int argc, char *argv[]) {
   sudoku s;
@@ -12,8 +11,12 @@ int main(int argc, char *argv[]) {
 
   while(true) {
     s.play();
-    s.validate();
+    if (s.won())
+      break;
     s.print(std::cout);
   }
+
+  s.print(std::cout);
+  std::cout << "Congrats, you completed the game!";
   return 0;
 }
