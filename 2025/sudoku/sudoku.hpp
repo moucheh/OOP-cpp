@@ -21,9 +21,10 @@ public:
   bool won();
 
 private:
-  void check_row(int row);
-  void check_col(int col);
-  void check_submatrix(int start_row, int start_col);
+  bool check_row(int row);
+  bool check_col(int col);
+  bool check_submatrix(int start_row, int start_col);
+  void remove_conflict(int row, int col);
 
 private: 
   std::vector<std::vector<cell>> _game;

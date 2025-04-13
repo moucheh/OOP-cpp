@@ -112,7 +112,7 @@ void sudoku::play() {
   validate(row - 1, col - 1);
 }
 
-void sudoku::check_row(int row) {
+bool sudoku::check_row(int row) {
   std::map<int, int> m;
 
   for (const auto &cell : _game[row])
@@ -133,9 +133,10 @@ void sudoku::check_row(int row) {
         break;
       }
   }
+  return conflict;
 }
 
-void sudoku::check_col(int col) {
+bool sudoku::check_col(int col) {
   std::map<int, int> m;
 
   for (const auto row : _game)
@@ -156,9 +157,10 @@ void sudoku::check_col(int col) {
         break;
       }
   }
+  return conflict;
 }
 
-void sudoku::check_submatrix(int start_row, int start_col) {
+bool sudoku::check_submatrix(int start_row, int start_col) {
   std::map<int, int> m;
 
   for (auto i = start_row; i < start_row + 3; ++i)
@@ -180,6 +182,7 @@ void sudoku::check_submatrix(int start_row, int start_col) {
           _game[i][j].faulty = true;
           break;
         }
+  return conflict;
 }
 
 void sudoku::validate() {
@@ -195,9 +198,6 @@ void sudoku::validate() {
 }
 
 void sudoku::validate(int row, int col) {
-  check_row(row);
-  check_col(col);
-
   int row_to_check;
   int col_to_check;
 
@@ -219,9 +219,22 @@ void sudoku::validate(int row, int col) {
   else if (col >= 6 && col < 9)
     col_to_check = 6;
 
-  check_submatrix(row_to_check, col_to_check);
+  if (!check_row(row) &&
+      !check_col(col) &&
+      !check_submatrix(row_to_check, col_to_check))
+    remove_conflict(row, col);
 }
 
 bool sudoku::won() {
   return !num_of_conflicts && num_of_nzero_cells == 81;
+}
+
+void sudoku::remove_conflict(int row, int col) {
+  if (row < 0 || row > 9)
+    return;
+  if (col < 0 || col > 9)
+    return;
+
+  _game[row][col].faulty = false;
+  --num_of_conflicts;
 }
