@@ -1,11 +1,15 @@
 #include "sudoku.hpp"
+
 #include <map>
 #include <sstream>
 #include <string>
 
-sudoku::sudoku() : _game(9), num_of_nzero_cells(0), num_of_conflicts(0) {
-  for (auto &row : _game)
-    row.resize(9, {0, false, false, false});
+sudoku::sudoku() :
+    _game(9),
+    num_of_nzero_cells(0),
+    num_of_conflicts(0) {
+  for (auto& row : _game)
+    row.resize(9, { 0, false, false, false });
 
   const std::string plus(1, '+');
   const std::string minus(3, '-');
@@ -15,9 +19,9 @@ sudoku::sudoku() : _game(9), num_of_nzero_cells(0), num_of_conflicts(0) {
   separator = sub_separator + sub_separator + sub_separator;
 }
 
-void sudoku::readPuzzle(std::istream &is) {
-  for (auto &row : _game)
-    for (auto &col : row) {
+void sudoku::readPuzzle(std::istream& is) {
+  for (auto& row : _game)
+    for (auto& col : row) {
       is >> col.value;
       if (col.value) {
         col.readonly = true;
@@ -26,7 +30,7 @@ void sudoku::readPuzzle(std::istream &is) {
     }
 }
 
-void sudoku::print(std::ostream &os) const {
+void sudoku::print(std::ostream& os) const {
   os << std::endl
      << "Cells filled: " << num_of_nzero_cells
      << "/81, conflicts: " << num_of_conflicts << std::endl;
@@ -38,7 +42,7 @@ void sudoku::print(std::ostream &os) const {
   for (auto i = 0; i < 9; ++i) {
     os << separator << std::endl;
     for (auto j = 0; j < 9; ++j) {
-      const cell &cell = _game[i][j];
+      const cell& cell = _game[i][j];
       os << '|' << ' ' << (!cell.faulty ? ' ' : '*') << ' ';
       if (check_if_multiple_of_3_or_last(j))
         os << '|';
@@ -46,7 +50,7 @@ void sudoku::print(std::ostream &os) const {
     os << '|' << std::endl;
 
     for (auto j = 0; j < 9; ++j) {
-      const cell &cell = _game[i][j];
+      const cell& cell = _game[i][j];
       if (cell.user) {
         os << '|' << '(' << cell.value << ')';
         if (check_if_multiple_of_3_or_last(j))
@@ -100,7 +104,7 @@ void sudoku::play() {
     std::cout << "Invalid column, 1 through 9 only allowed!" << std::endl;
     return play();
   }
-  auto &target_cell = _game[row - 1][col - 1];
+  auto& target_cell = _game[row - 1][col - 1];
 
   if (target_cell.readonly) {
     std::cout << "Readonly cell!" << std::endl;
@@ -129,18 +133,18 @@ void sudoku::play() {
 bool sudoku::check_row(int row) {
   std::map<int, int> m;
 
-  for (const auto &cell : _game[row])
+  for (const auto& cell : _game[row])
     if (cell.value)
       ++m[cell.value];
 
   int conflict = 0;
 
-  for (const auto &[key, value] : m)
+  for (const auto& [key, value] : m)
     if (value > 1)
       conflict = key;
 
   if (conflict) {
-    for (auto &cell : _game[row])
+    for (auto& cell : _game[row])
       if (cell.value == conflict && !cell.faulty) {
         cell.faulty = true;
         ++num_of_conflicts;
@@ -158,12 +162,12 @@ bool sudoku::check_col(int col) {
 
   int conflict = 0;
 
-  for (const auto &[key, value] : m)
+  for (const auto& [key, value] : m)
     if (value > 1)
       conflict = key;
 
   if (conflict) {
-    for (auto &row : _game)
+    for (auto& row : _game)
       if (row[col].value == conflict && !row[col].faulty) {
         row[col].faulty = true;
         ++num_of_conflicts;
@@ -182,7 +186,7 @@ bool sudoku::check_submatrix(int start_row, int start_col) {
 
   int conflict = 0;
 
-  for (const auto &[key, value] : m)
+  for (const auto& [key, value] : m)
     if (value > 1)
       conflict = key;
 
@@ -207,7 +211,9 @@ void sudoku::validate(int row, int col) {
     remove_conflicts(row, col);
 }
 
-bool sudoku::won() const { return !num_of_conflicts && num_of_nzero_cells == 81; }
+bool sudoku::won() const {
+  return !num_of_conflicts && num_of_nzero_cells == 81;
+}
 
 void sudoku::remove_conflicts(int row, int col) {
   if (row < 0 || row > 9)
@@ -215,13 +221,13 @@ void sudoku::remove_conflicts(int row, int col) {
   if (col < 0 || col > 9)
     return;
 
-  for (auto &cell : _game[row]) {
+  for (auto& cell : _game[row]) {
     if (cell.faulty)
       --num_of_conflicts;
     cell.faulty = false;
   }
 
-  for (auto &row : _game) {
+  for (auto& row : _game) {
     if (row[col].faulty)
       --num_of_conflicts;
     row[col].faulty = false;
@@ -237,7 +243,9 @@ void sudoku::remove_conflicts(int row, int col) {
     }
 }
 
-std::pair<int, int> sudoku::get_submatrix_start_indexes(int row, int col) const {
+std::pair<int, int> sudoku::get_submatrix_start_indexes(
+    int row, int col
+) const {
   int srow;
   int scol;
 
@@ -259,7 +267,7 @@ std::pair<int, int> sudoku::get_submatrix_start_indexes(int row, int col) const 
   else if (col >= 6 && col < 9)
     scol = 6;
 
-  return {srow, scol};
+  return { srow, scol };
 }
 
 std::ostream& operator<<(std::ostream& os, const sudoku& s) {

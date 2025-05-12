@@ -14,8 +14,8 @@ struct cell {
 class sudoku {
 public:
   sudoku();
-  void readPuzzle(std::istream &);
-  void print(std::ostream &) const;
+  void readPuzzle(std::istream&);
+  void print(std::ostream&) const;
   void play();
   void validate(int row, int col);
   bool won() const;

@@ -1,8 +1,9 @@
-#include "sudoku.hpp"
 #include <fstream>
 #include <iostream>
 
-int main(int argc, char *argv[]) {
+#include "sudoku.hpp"
+
+int main(int argc, char* argv[]) {
   sudoku s;
   std::ifstream f("input.txt");
 
